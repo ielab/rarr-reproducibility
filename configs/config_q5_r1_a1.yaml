@@ -1,0 +1,56 @@
+# mac
+# model_cache_dir: "/Users/jjr/.cache/huggingface/hub/"
+# linux workstation
+# model_cache_dir: "/Users/jjr/.cache/huggingface/hub/"
+# bunya hpc
+# model_cache_dir: "/scratch/project/neural_ir/cache/hf_models/"
+
+shared:
+    model_cache_dir: "/scratch/project/neural_ir/cache/hf_models/"
+
+# q4 is RARR queries using number or wikibib fact queries as a baseline
+query_gen:
+  input_file: "./input/processed/${DATASET}_input_processed.jsonl"
+  output_file: "./output/${DATASET}/${DATASET}_q5.jsonl"
+  claim_field: "decon_sentence"
+  model_name: "Llama-3.1-8B"
+  method: "query-gen"
+  temperature: 0.7
+  query_strategy: "baseline_count"   # fact, rounds, baseline_fact, or baseline_count
+  baseline_count_key: baseline_query_count # identifies input data for baseline_count strategy
+  baseline_count_offset: -1   # only needed for +/- in baseline_count strategy
+  num_rounds: None        # only needed for rounds strategy
+  max_attempts: 20        # only needed for baseline strategies
+  use_modified_prompt: true
+  model_cache_dir: "/scratch/project/neural_ir/cache/hf_models/"
+
+# mac paths
+# document_reps_dir: "/Users/jjr/datasets/wikipedia_2023/encodings/*"
+# corpus_cache_dir: "/Users/jjr/datasets/wikipedia_2023/corpus/"
+# home workstation paths
+# document_reps_dir: "/home/jjr/datasets/wikipedia_2023/encodings/*"
+# corpus_cache_dir: "/home/jjr/datasets/wikipedia_2023/corpus/"
+# bunya hpc
+# document_reps_dir: "/scratch/project/neural_ir/katya/IR_encoding/wiki_chunked/corpus/*"
+# corpus_cache_dir: "/scratch/project/neural_ir/katya/IR_datasets/wikipedia_2023_chunked/"
+
+evidence_retrieval:
+  input_file: "./output/${DATASET}/${DATASET}_q5.jsonl"
+  output_file: "./output/${DATASET}/${DATASET}_q5_r1.jsonl"
+  document_reps_dir: "/scratch/project/neural_ir/katya/IR_encoding/wiki_chunked/corpus/*"
+  corpus_cache_dir: "/scratch/project/neural_ir/katya/IR_datasets/wikipedia_2023_chunked/"
+  max_evidence_per_query: 1
+  debug: false
+  model_cache_dir: "/scratch/project/neural_ir/cache/hf_models/"
+  resume: false
+
+agreement:
+  input_file: "./output/${DATASET}/${DATASET}_q5_r1.jsonl"
+  output_file: "./output/${DATASET}/${DATASET}_q5_r1_a1.jsonl"
+  claim_field: "decon_sentence"
+  model_name: "Llama-3.1-8B"
+  temperature: 0.7
+  use_modified_prompt: true
+  model_cache_dir: "/scratch/project/neural_ir/cache/hf_models/"
+  resume: true
+

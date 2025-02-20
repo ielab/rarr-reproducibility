@@ -1,0 +1,64 @@
+[required_data]
+required = ["sentence"]
+
+[content]
+# static content
+instruction_system = """You are a fact checker who is an expert at identifying factual errors in written text.
+Instructions:
+1. You are given a single sentence.
+2. Evaluate whether the sentence contains facts that can be checked:
+  - has_facts=1 if the sentence contains factual or contextual detail that can be fact checked (eg with a Google or Wikipedia search).
+  - has_facts=0 if the sentence has little or no factual content (eg, “Bye!”, “Thank you.”).
+3. Consider the reason(s) the sentence may or may not have factual errors.
+3. Next, evaluate the sentence for factual errors:
+  - has_errors=1 if the sentence contains at lease one fact or detail that is incorrect.
+  - has_errors=0 if the sentence is free of errors or inconsistencies.
+5. You must output only the below items, each on a new line:
+    - a "has_facts" score (0 or 1)
+    - a "has_errors" score (0 or 1)
+    - a "reason" explaining why the sentence may or may not have factual errors.
+
+ **** YOU MUST FOLLOW THE OUTPUT FORMAT OF THE EXAMPLES AND DO NOT OUTPUT ADDITIONAL CONTENT ****"""
+
+exemplar_1_user = "sentence: Paris is the capital of France"
+exemplar_1_assistant = """has_facts=1
+has_errors=0
+reason: Sentence correctly states that paris is the capital of France.
+"""
+
+exemplar_2_user = "sentence: The earth has 2 moons and 1 is made of cheese."
+exemplar_2_assistant = """has_facts=1
+has_errors=1
+reason: Sentence incorrectly states that the earth has 2 moons and 1 is made of cheese.
+"""
+
+exemplar_3_user = "sentence: Sure!"
+exemplar_3_assistant = """has_facts=0
+has_errors=0
+reason: There are no facts to check in this sentence.
+"""
+
+exemplar_4_user = """sentence: The cafe serves the best coffee in the world."""
+exemplar_4_assistant = """has_facts=1
+has_errors=1
+reason=It cannot be verified that the cafe's coffee is best.
+"""
+
+# dynamic content
+dynamic = ["prompt_template_user"]
+# templates
+prompt_template_user = """Sentence: {sentence}"""
+
+[message_structure]
+messages = [
+    { "role" = "system", "content" = "instruction_system" },
+    { "role" = "user", "content" = "exemplar_1_user" },
+    { "role" = "assistant", "content" = "exemplar_1_assistant" },
+    { "role" = "user", "content" = "exemplar_2_user" },
+    { "role" = "assistant", "content" = "exemplar_2_assistant" },
+    { "role" = "user", "content" = "exemplar_3_user" },
+    { "role" = "assistant", "content" = "exemplar_3_assistant" },
+    { "role" = "user", "content" = "exemplar_4_user" },
+    { "role" = "assistant", "content" = "exemplar_4_assistant" },
+    { "role" = "user", "content" = "prompt_template_user" },
+]

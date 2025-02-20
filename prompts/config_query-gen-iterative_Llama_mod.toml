@@ -1,0 +1,156 @@
+# ========================
+# Required data
+# ========================
+[required_data]
+# For each call, you supply:
+# - claim: the user’s statement to verify
+# - existing_queries: the queries generated in all prior calls (can be empty for first call)
+required = ["claim", "existing_queries"]
+
+# ========================
+# Static content
+# ========================
+[content]
+
+instruction_system = """
+You are an LLM that reviews user statements to generate verification questions.
+For each aspect of the statement, generate a verification question that starts with "I googled:".
+Refer to existing verification questions (if provided) to avoid duplicates.
+Your answer should always start with:
+To verify it:
+"""
+
+# ---------- Exemplars ----------
+
+# Exemplar 1 user (shows no previously generated queries)
+exemplar_1_user = """
+We have already generated these queries in previous steps (if any):
+1. I googled: Does your nose switch between nostrils?
+
+Please do not repeat the above queries (if any), and ensure new queries are diversified.
+
+You said: Your nose switches back and forth between nostrils. When you sleep, you switch about every 45 minutes. This is to prevent a buildup of mucus. It’s called the nasal cycle.
+"""
+
+exemplar_1_assistant = """
+To verify it:
+1. I googled: How often does your nostrils switch?
+2. I googled: Why does your nostril switch?
+3. I googled: What is the nasal cycle?
+"""
+
+# Exemplar 2 user (still no previously generated queries, i.e. first conversation)
+exemplar_2_user = """
+We have already generated these queries in previous steps (if any):
+
+Please do not repeat the above queries (if any), and ensure new queries are diversified.
+
+You said: The Stanford Prison Experiment was conducted in the basement of Encina Hall, Stanford’s psychology building.
+"""
+
+exemplar_2_assistant = """
+To verify it:
+1. I googled: Where was Stanford Prison Experiment was conducted?
+"""
+
+# Exemplar 3 user (pretending we already have a query from earlier, just as an example)
+exemplar_3_user = """
+We have already generated these queries in previous steps (if any):
+1. I googled: What does Havel-Hakimi algorithm do?
+
+Please do not repeat the above queries (if any), and ensure new queries are diversified.
+
+You said: The Havel-Hakimi algorithm is an algorithm for converting the adjacency matrix of a graph into its adjacency list. It is named after Vaclav Havel and Samih Hakimi.
+"""
+
+exemplar_3_assistant = """
+To verify it:
+1. I googled: Who is the Havel-Hakimi algorithm named after?
+"""
+
+# Exemplar 4 user (pretending we already have a query about Havel-Hakimi)
+exemplar_4_user = """
+We have already generated these queries in previous steps (if any):
+1. I googled: Who sings the song "Time of My Life"?
+2. I googled: Which film is the song "Time of My Life" from?
+
+Please do not repeat the above queries (if any), and ensure new queries are diversified.
+
+You said: "Time of My Life" is a song by American singer-songwriter Bill Medley from the soundtrack of the 1987 film Dirty Dancing. The song was produced by Michael Lloyd.
+"""
+
+exemplar_4_assistant = """
+To verify it:
+1. I googled: Who produced the song "Time of My Life"
+"""
+
+# Exemplar 5 user (pretending we already have a query about “Time of My Life”)
+exemplar_5_user = """
+We have already generated these queries in previous steps (if any):
+
+Please do not repeat the above queries (if any), and ensure new queries are diversified.
+
+You said: Kelvin Hopins was suspended from the Labor Party due to his membership in the Conservative Party.
+"""
+
+exemplar_5_assistant = """
+To verify it:
+1. I googled: Why was Kelvin Hopins suspended from Labor Party?
+"""
+
+# Exemplar 6 user (pretending we already have a query about Kelvin Hopins)
+exemplar_6_user = """
+We have already generated these queries in previous steps (if any):
+1. I googled: What philosophical tradition is social work based on?
+
+Please do not repeat the above queries (if any), and ensure new queries are diversified.
+
+You said: Social work is a profession that is based in the philosophical tradition of humanism. It is an intellectual discipline that has its roots in the 1800s.
+"""
+
+exemplar_6_assistant = """
+To verify it:
+1. I googled: What year does social work have its root in?
+2. I googled: Is social work a profession?
+"""
+
+# ---------- Final user prompt template ----------
+# This is the actual prompt you'll fill with {existing_queries} and {claim} at run time
+prompt_template_user = """
+We have already generated these queries in previous steps (if any):
+{existing_queries}
+
+Please do not repeat the above queries (if any), and ensure new queries are diversified.
+
+You said: {claim}
+"""
+
+# ========================
+# Dynamic content
+# ========================
+dynamic = ["prompt_template_user"]
+
+# ========================
+# Message structure
+# ========================
+[message_structure]
+messages = [
+    { "role" = "system",    "content" = "instruction_system" },
+
+    # All exemplars, each with same format
+    { "role" = "user",      "content" = "exemplar_1_user" },
+    { "role" = "assistant", "content" = "exemplar_1_assistant" },
+    { "role" = "user",      "content" = "exemplar_2_user" },
+    { "role" = "assistant", "content" = "exemplar_2_assistant" },
+    { "role" = "user",      "content" = "exemplar_3_user" },
+    { "role" = "assistant", "content" = "exemplar_3_assistant" },
+    { "role" = "user",      "content" = "exemplar_4_user" },
+    { "role" = "assistant", "content" = "exemplar_4_assistant" },
+    { "role" = "user",      "content" = "exemplar_5_user" },
+    { "role" = "assistant", "content" = "exemplar_5_assistant" },
+    { "role" = "user",      "content" = "exemplar_6_user" },
+    { "role" = "assistant", "content" = "exemplar_6_assistant" },
+
+    # Final user prompt (the actual query we want the LLM to answer)
+    { "role" = "user",      "content" = "prompt_template_user" }
+]

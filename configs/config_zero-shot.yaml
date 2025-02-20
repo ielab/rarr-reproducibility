@@ -1,0 +1,23 @@
+input_file: "./input/processed/wiki_input_processed.jsonl"
+model_cache_dir: "/scratch/project/neural_ir/cache/hf_models/"
+output_file: "./output/wiki_zero_shot_output_70b.jsonl"
+claim_field: "decon_sentence"
+model_name: "Llama-3.1-8B"
+temperature: 0.7
+
+# mac paths
+# document_reps_dir: "/Users/jjr/datasets/wikipedia_2023/encodings/*"
+# corpus_cache_dir: "/Users/jjr/datasets/wikipedia_2023/corpus/"
+# home workstation paths
+# document_reps_dir: "/home/jjr/datasets/wikipedia_2023/encodings/*"
+# corpus_cache_dir: "/home/jjr/datasets/wikipedia_2023/corpus/"
+# bunya hpc
+# document_reps_dir: "/scratch/project/neural_ir/katya/IR_encoding/wiki_chunked/corpus/*"
+# corpus_cache_dir: "/scratch/project/neural_ir/katya/IR_datasets/wikipedia_2023_chunked/"
+
+# mac
+# model_cache_dir: "/Users/jjr/.cache/huggingface/hub/"
+# linux workstation
+# model_cache_dir: "/Users/jjr/.cache/huggingface/hub/"
+# bunya hpc
+# model_cache_dir: "/scratch/project/neural_ir/cache/hf_models/"
