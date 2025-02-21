@@ -10,6 +10,7 @@ identifying insights into RARRs strengths, limitations, and potential areas for 
 findings are that query generation and retrieval are effective and that the agreement module is a weak <br>
 link in the RARR pipeline.
 
+![](./hallucination_pipeline.png)
 
 ## **Setup Guide**
 
